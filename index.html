@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amazon Product</title>
   <style>
+    /* Estilos CSS para a página */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -43,43 +44,59 @@
   </style>
 </head>
 <body>
+  <!-- Container principal -->
   <div class="container">
     <h1>Amazon Product Scraper</h1>
+    <!-- Campo de entrada para a palavra-chave -->
     <input type="text" id="keyword" placeholder="Enter keyword">
+    <!-- Botão para iniciar a raspagem -->
     <button id="scrape">Scrape</button>
+    <!-- Resultados da raspagem serão exibidos aqui -->
     <div class="results" id="results"></div>
   </div>
+  <!-- JavaScript para lidar com a interação do usuário -->
   <script>
+    // Adiciona um ouvinte de evento ao botão de raspagem
     document.getElementById('scrape').addEventListener('click', async () => {
+      // Obtém a palavra-chave digitada pelo usuário
       const keyword = document.getElementById('keyword').value;
+      // Verifica se a palavra-chave foi fornecida
       if (!keyword) {
         alert('Keyword is required');
         return;
       }
   
       try {
+        // Realiza uma solicitação para o endpoint de raspagem no backend
         const response = await fetch(`/api/scrape?keyword=${encodeURIComponent(keyword)}`);
+        // Verifica se a resposta da solicitação é bem-sucedida
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
   
+        // Extrai os dados da resposta JSON
         const products = await response.json();
   
+        // Limpa os resultados anteriores
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = '';
   
+        // Itera sobre os produtos e os exibe na página
         products.forEach(product => {
           const productDiv = document.createElement('div');
           productDiv.className = 'product';
+          // Insere as informações do produto na div criada
           productDiv.innerHTML = `
             <h2>${product.title}</h2>
             <p>Rating: ${product.rating}</p>
             <p>Reviews: ${product.reviews}</p>
             <img src="${product.imageUrl}" alt="Product Image">
           `;
+          // Adiciona a div do produto aos resultados
           resultsDiv.appendChild(productDiv);
         });
       } catch (error) {
+        // Exibe um alerta em caso de erro
         alert('Error: ' + error.message);
       }
     });
